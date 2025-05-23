@@ -1,39 +1,34 @@
 #include <Servo.h>
 
-Servo servo1;
-Servo servo2;
-Servo servo3;
-Servo servo4;
+Servo servos[4];
+int pins[4] = {9, 6, 5, 3};
+int previousServo = -1;
 
 void setup() {
-  servo1.attach(9);
-  servo2.attach(6);
-  servo3.attach(5);
-  servo4.attach(3);
+  for (int i = 0; i < 4; i++) {
+    servos[i].attach(pins[i]);
+    servos[i].write(0);
+  }
+
+  randomSeed(analogRead(A0)); 
 }
 
 void loop() {
-  
-  servo1.write(90);
-  delay(1000);
-  servo1.write(0);
-  delay(1000);
+  int selected;
 
   
-  servo2.write(90);
-  delay(1000);
-  servo2.write(0);
-  delay(1000);
+  do {
+    selected = random(0, 4);
+  } while (selected == previousServo);
+
+  previousServo = selected;
 
   
-  servo3.write(90);
-  delay(1000);
-  servo3.write(0);
-  delay(1000);
+  int potValue = analogRead(A2);
+  int delayTime = map(potValue, 0, 1023, 500, 2000);
 
- 
-  servo4.write(90);
-  delay(1000);
-  servo4.write(0);
-  delay(1000);
+  servos[selected].write(90);
+  delay(delayTime / 2);   
+  servos[selected].write(0);
+  delay(delayTime / 2);   
 }
